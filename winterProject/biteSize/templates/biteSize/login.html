@@ -1,0 +1,22 @@
+{% extends "biteSize/layout.html" %}
+
+{% block body %}
+    
+    <h1 class="form-heading">LogIn</h1>
+    <form class="login-form" action="{% url 'login' %}" method="post">
+        <div class="signError">
+            {% if error %}
+                {{ error }}
+            {% endif %}
+        </div>
+        {% csrf_token  %}
+        <input name="username" class="credentials" value="" type="text" placeholder="Username">
+        <input name="password" class="credentials" type="password" placeholder="Password">
+        <button class="credentials">
+            Login
+        </button>
+    </form>
+    <p> Don't have an account? <a href="{% url 'register' %}"> Register </a> </p>
+    
+
+{% endblock %}
