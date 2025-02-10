@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import Profile, FoodLog, CustomMeal
 from rest_framework import serializers
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.password_validation import validate_password
@@ -12,16 +12,19 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "username", "password"]
         extra_kwargs = { "password": {"write_only": True} }
+    
+    def validate_password(self, value):
+        if value:
+            try:
+                validate_password(value)
+            except ValidationError as e:
+                raise serializers.ValidationError(e.messages)
+        return value
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
 
-from django.contrib.auth.hashers import check_password
-from django.core.exceptions import ValidationError
-from django.contrib.auth.password_validation import validate_password
-from rest_framework import serializers
-from django.contrib.auth import get_user_model
 
 
 class UpdateUserSerializer(serializers.ModelSerializer):
@@ -94,3 +97,16 @@ class ProfileSerializer(serializers.ModelSerializer):
     def delete(self, instance):
         instance.delete()
         return {"message": "Profile deleted successfully"}
+    
+
+class FoodLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FoodLog
+        fields = ["id", "food_name", "calories", "meal_time"]
+        read_only_fields = ["id", "meal_time"]
+
+class CustomMealSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomMeal
+        fields = ["id", "meal_name", "calories", "created_at"]
+        

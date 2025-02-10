@@ -32,3 +32,24 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s Profile"
+    
+class FoodLog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="food_logs")
+    food_name = models.CharField(max_length=255)
+    calories = models.FloatField()
+    meal_time = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.food_name} - {self.user.username}"
+
+
+# Custom meal model
+class CustomMeal(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, name="custom_meals")
+    meal_name = models.CharField(max_length=255)
+    calories = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.meal_name} - {self.user.username}"
+
