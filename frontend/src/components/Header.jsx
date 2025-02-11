@@ -1,32 +1,67 @@
 import { Link } from "react-router-dom";
 import "../styles/Header.css";
 import Logo from "./Logo";
+import react, { useState } from "react";
 
-function Header() {
+const Header = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <header className="header">
+      {/* Logo */}
       <div className="logo">
-        <Logo />
+        <Link to="/" onClick={() => setMenuOpen(false)}>
+          <Logo />
+        </Link>
       </div>
 
-      <nav>
-        <ul className="nav-links">
+      {/* Navigation */}
+      <nav className={`nav-links ${menuOpen ? "open" : ""}`}>
+        <ul>
           <li>
-            <Link to="/">Home</Link>
+            <Link to="/" onClick={() => setMenuOpen(false)}>
+              Home
+            </Link>
           </li>
           <li>
-            <Link to="/dashboard">Dashboard</Link>
+            <Link to="/meal-plans" onClick={() => setMenuOpen(false)}>
+              Meal Plans
+            </Link>
           </li>
           <li>
-            <Link to="/meal-planner">Meal Planner</Link>
+            <Link to="/track-food" onClick={() => setMenuOpen(false)}>
+              Track Food
+            </Link>
           </li>
           <li>
-            <Link to="/logout">Logout</Link>
+            <Link to="/progress" onClick={() => setMenuOpen(false)}>
+              Progress
+            </Link>
+          </li>
+          <li>
+            <Link to="/notifications" onClick={() => setMenuOpen(false)}>
+              Notifications
+            </Link>
+          </li>
+          <li>
+            <Link to="/profile" onClick={() => setMenuOpen(false)}>
+              Profile
+            </Link>
           </li>
         </ul>
       </nav>
+
+      {/* Hamburger Menu for Mobile */}
+      <div
+        className={`menu-icon ${menuOpen ? "open" : ""}`}
+        onClick={() => setMenuOpen(!menuOpen)}
+      >
+        <div className="bar"></div>
+        <div className="bar"></div>
+        <div className="bar"></div>
+      </div>
     </header>
   );
-}
+};
 
 export default Header;
