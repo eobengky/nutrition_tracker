@@ -51,7 +51,6 @@ const Header = () => {
         </ul>
       </nav>
 
-      {/* Hamburger Menu for Mobile */}
       <div
         className={`menu-icon ${menuOpen ? "open" : ""}`}
         onClick={() => setMenuOpen(!menuOpen)}
