@@ -1,5 +1,12 @@
 import react from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
+import Header from "./components/Header";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
@@ -16,10 +23,22 @@ function RegisterAndLogout() {
   return <Register />;
 }
 
-function App() {
+function Layout({ children }) {
+  const location = useLocation();
+  const hideHeader = ["/login", "/register"].includes(location.pathname);
+
   return (
     <>
-      <BrowserRouter>
+      {!hideHeader && <Header />}
+      {children}
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Layout>
         <Routes>
           <Route
             path="/"
@@ -34,8 +53,8 @@ function App() {
           <Route path="/logout" element={<Logout />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
-    </>
+      </Layout>
+    </BrowserRouter>
   );
 }
 
