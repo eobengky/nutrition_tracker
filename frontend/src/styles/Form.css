@@ -34,3 +34,22 @@
 .form-button:hover {
     background-color: #0056b3;
 }
+
+.auth-prompt {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+    color: #555;
+}
+
+.auth-prompt a {
+    color: #3498db;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s ease-in-out;
+}
+
+.auth-prompt a:hover {
+    color: #217dbb;
+    text-decoration: underline;
+}

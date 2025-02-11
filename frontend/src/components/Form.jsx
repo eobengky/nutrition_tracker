@@ -1,11 +1,12 @@
 import { useState } from "react";
 import api from "../api";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import "../styles/Form.css";
+import LoadingIndicator from "./LoadingIndicator";
 
 function Form({ route, method }) {
-  const [username, setUserName] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function Form({ route, method }) {
 
     try {
       const res = await api.post(route, { username, password });
-      if (method === "Login") {
+      if (method === "login") {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
         navigate("/");
@@ -40,7 +41,7 @@ function Form({ route, method }) {
           className="form-input"
           type="text"
           value={username}
-          onChange={(e) => setUserName(e.target.value)}
+          onChange={(e) => setUsername(e.target.value)}
           placeholder="Username"
         />
         <input
@@ -50,9 +51,21 @@ function Form({ route, method }) {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
         />
+        {loading && <LoadingIndicator />}
         <button className="form-button" type="submit">
           {name}
         </button>
+        {name === "Login" && (
+          <p className="auth-prompt">
+            Don't have an account yet? <Link to="/register">Register here</Link>
+          </p>
+        )}
+
+        {name === "Register" && (
+          <p className="auth-prompt">
+            Already have an account? <Link to="/login">Login here</Link>
+          </p>
+        )}
       </form>
     </>
   );
