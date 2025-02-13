@@ -5,6 +5,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
+import os
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -75,10 +76,20 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    profile_picture = serializers.ImageField(required=False)
+
     class Meta:
         model = Profile
-        fields = ["id", "user", "age", "weight", "height", "activity_level", "dietary_preferences", "allergies", "fitness_goal"]
+        fields = ["id", "user", "age", "weight", "height", "activity_level", "dietary_preferences", "allergies", "fitness_goal", "profile_picture"]
         extra_kwargs = { "user": { "read_only": True } }
+
+    def validate_profile_picture(self, value):
+        allowed_extensions = [".jpg", ".jpeg", ".png", ".gif"]
+        ext = os.path.splitext(value.name)[-1].lower()
+
+        if ext not in allowed_extensions:
+            raise serializers.ValidationError("Only .jpg, .jpeg, .png, and .gif files are allowed.")
+        return value
     
     def create(self, validated_data):
         user = self.context["request"].user
@@ -86,11 +97,19 @@ class ProfileSerializer(serializers.ModelSerializer):
         if Profile.objects.filter(user=user).exists():
             raise serializers.ValidationError("User already has a profile.")
         validated_data["user"] = user
+
         return super().create(validated_data)
     
     def update(self, instance, validated_data):
+        profile_pic = validated_data.pop("profile_picture", None)
+
+
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
+        instance.save()
+
+        if profile_pic:
+            instance.profile_picture = profile_pic
         instance.save()
         return instance
 

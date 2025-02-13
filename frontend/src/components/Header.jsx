@@ -8,14 +8,12 @@ const Header = () => {
 
   return (
     <header className="header">
-      {/* Logo */}
       <div className="logo">
         <Link to="/" onClick={() => setMenuOpen(false)}>
           <Logo />
         </Link>
       </div>
 
-      {/* Navigation */}
       <nav className={`nav-links ${menuOpen ? "open" : ""}`}>
         <ul>
           <li>
@@ -46,6 +44,11 @@ const Header = () => {
           <li>
             <Link to="/profile" onClick={() => setMenuOpen(false)}>
               Profile
+            </Link>
+          </li>
+          <li>
+            <Link to="/logout" onClick={() => setMenuOpen(false)}>
+              Logout
             </Link>
           </li>
         </ul>

@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from api.views import CreateUserView, CreateProfileView, UpdateProfileView, DeleteProfileView, RetrieveProfileView, DeleteUserView, UpdateUserView, FoodLogCreateView, FoodLogDeleteView, FoodLogListView, FoodLogUpdateView, CustomMealCreateView, CustomMealUpdateView, CustomMealDeleteView, CustomMealListView, MealRecommendations
@@ -32,3 +34,5 @@ urlpatterns = [
     path("api/meal/custom/<int:pk>/", CustomMealDeleteView.as_view(), name="custom-meal-delete")
 ]
 
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

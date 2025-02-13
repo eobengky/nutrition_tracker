@@ -4,6 +4,7 @@ from .models import Profile, FoodLog, CustomMeal
 from rest_framework import generics, serializers, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
 from .serializers import UserSerializer, ProfileSerializer, UpdateUserSerializer, FoodLogSerializer, CustomMealSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 import openai
@@ -63,20 +64,30 @@ class RetrieveProfileView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        return self.request.user.profile
+        profile, create = Profile.objects.get_or_create(user=self.request.user)
+        return profile
 
 class UpdateProfileView(generics.RetrieveUpdateAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_object(self):
-        return self.request.user.profile
+        profile, create = Profile.objects.get_or_create(user=self.request.user)
+        return profile
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+
+        profile_pic = request.FILES.get("profile_picture", None)
+        data = request.data.copy()
+
+        if not profile_pic:
+            data.pop("profile_picture", None)
+
+        serializer = self.get_serializer(instance, data=data, partial=partial)
 
         if serializer.is_valid():
             serializer.save()
@@ -92,7 +103,8 @@ class DeleteProfileView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        return self.request.user.profile
+        profile, create = Profile.objects.get_or_create(user=self.request.user)
+        return profile
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()

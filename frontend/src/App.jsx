@@ -9,6 +9,7 @@ import {
 import Header from "./components/Header";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Profile from "./pages/Profile";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -52,6 +53,14 @@ function App() {
           <Route path="/register" element={<RegisterAndLogout />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="*" element={<NotFound />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Layout>
     </BrowserRouter>

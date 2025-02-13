@@ -18,4 +18,6 @@ api.interceptors.request.use(
   }
 );
 
+export const MEDIA_URL = `${import.meta.env.VITE_API_URL}/media/`
+
 export default api;

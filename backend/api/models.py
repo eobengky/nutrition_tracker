@@ -1,5 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
+import os
+from uuid import uuid4
+
+def profile_picture_upload_path(instance, filename):
+    ext = os.path.splitext(filename)[-1]
+    return f"profile_pics/{instance.user.username}_{uuid4().hex[:8]}{ext}"
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
@@ -27,6 +34,12 @@ class Profile(models.Model):
         ],
         default="maintenance"
     )
+    profile_picture = models.ImageField(
+        upload_to=profile_picture_upload_path, 
+        max_length=255,
+        null=True, 
+        blank=True, 
+        default="profile_pics/default.jpg")
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
 

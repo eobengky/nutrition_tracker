@@ -154,3 +154,6 @@ CORS_ALLOW_CREDENTIALS = True
 
 
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
