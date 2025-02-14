@@ -1,4 +1,4 @@
-import react from "react";
+import react, { useState, useEffect } from "react";
 import {
   BrowserRouter,
   Routes,
@@ -7,6 +7,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import Header from "./components/Header";
+import { fetchProfile } from "./pages/Profile";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
@@ -24,22 +25,37 @@ function RegisterAndLogout() {
   return <Register />;
 }
 
-function Layout({ children }) {
+function Layout({ children, profile, refreshProfile }) {
   const location = useLocation();
   const hideHeader = ["/login", "/register"].includes(location.pathname);
 
   return (
     <>
-      {!hideHeader && <Header />}
+      {!hideHeader && <Header profile={profile} refreshProfile={refreshProfile} />}
       {children}
     </>
   );
 }
 
 function App() {
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    refreshProfile();
+  }, []);
+
+  const refreshProfile = async () => {
+    try {
+      const data = await fetchProfile();
+      setProfile(data);
+    } catch (error) {
+      console.error("Error fetching profile: ", error);
+    }
+  };
+
   return (
     <BrowserRouter>
-      <Layout>
+      <Layout profile={profile} refreshProfile={refreshProfile}>
         <Routes>
           <Route
             path="/"

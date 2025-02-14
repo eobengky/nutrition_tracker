@@ -5,12 +5,23 @@ import "../styles/Profile.css";
 import { useNavigate } from "react-router-dom";
 import LoadingIndicator from "../components/LoadingIndicator";
 
+export const fetchProfile = async () => {
+  try {
+    const response = await api.get("/api/user/profile/");
+    return response.data;
+  } catch (err) {
+    console.error("Failed to load profile: ", err);
+    return null;
+  }
+};
+
 const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [formData, setFormData] = useState({});
   const [fileName, setFileName] = useState("No file chosen");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [updated, setUpdated] = useState(false);
   const navigate = useNavigate();
   const profileName = profile ? "Edit Profile" : "Create Profile";
 
@@ -22,22 +33,20 @@ const Profile = () => {
     `${MEDIA_URL}/profile_pics/default.jpg`;
 
   useEffect(() => {
-    fetchProfile();
-  }, []);
+    const loadProfile = async () => {
+      setLoading(true);
+      const data = await fetchProfile();
 
-  const fetchProfile = async () => {
-    setLoading(true);
-    try {
-      const response = await api.get("/api/user/profile/");
-
-      setProfile(response.data);
-      setFormData(response.data);
-    } catch (err) {
-      setError("Failed to load profile. You may need to create one.");
-    } finally {
+      if (data) {
+        setProfile(data);
+        setFormData(data);
+      } else {
+        setError("Failed to load profile. You may need to create one.");
+      }
       setLoading(false);
-    }
-  };
+    };
+    loadProfile();
+  }, [updated]);
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -69,7 +78,8 @@ const Profile = () => {
         });
         alert("Profile created successfully!");
       }
-      fetchProfile();
+      setUpdated((prev) => !prev);
+      window.location.href = "/";
     } catch (error) {
       setError("Profile update failed.");
     } finally {

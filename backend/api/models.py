@@ -28,8 +28,8 @@ class Profile(models.Model):
     fitness_goal = models.CharField(
         max_length=50,
         choices= [
-            ("weight loss", "Weight Loss"),
-            ("muscle gain", "Muscle Gain"),
+            ("weight_loss", "Weight Loss"),
+            ("muscle_gain", "Muscle Gain"),
             ("maintenance", "Maintenance")
         ],
         default="maintenance"
